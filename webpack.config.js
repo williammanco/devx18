@@ -124,6 +124,14 @@ const config = {
           },
         ],
       },
+      {
+        test: /\.(obj)$/,
+        use: [
+          {
+            loader: 'url-loader',
+          },
+        ],
+      },
     ],
   },
 

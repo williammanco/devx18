@@ -1,5 +1,5 @@
-import loading from './loading'
+import loader from './loader'
 
 export default {
-  loading,
+  loader,
 }
