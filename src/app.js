@@ -13,7 +13,7 @@ class App extends Component {
   }
   update() {
     this.canvas.update()
-    requestAnimationFrame( this.update.bind(this) )
+    requestAnimationFrame(this.update.bind(this))
   }
   render() {
     const { location } = this.props.history
@@ -26,7 +26,7 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route path="/test" component={Test} />
           </Switch>
-          <Canvas onRef={ref => this.canvas = ref} />
+          <Canvas onRef={ref => (this.canvas = ref)} />
         </Layout>
       </ThemeProvider>
     )
