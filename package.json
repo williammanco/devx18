@@ -1,0 +1,100 @@
+{
+  "name": "devx18",
+  "version": "0.1.0",
+  "description": "DEVX 2018 - experiment - William Manco & Sebastiano Pierotti",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "clean": "rimraf dist",
+    "build": "cross-env npm run clean && webpack --config webpack.production.config.js --progress --profile --colors",
+    "lint": "eslint ./src/**/**.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "precommit": "cross-env npm run lint && npm test",
+    "prepush": "cross-env npm run lint && npm test",
+    "start:doc": "documentation serve --watch --shallow src/components/**",
+    "build:doc": "documentation build src/components/** -f html -o docs --shallow",
+    "build:readme": "documentation readme src/components/** --section=API"
+  },
+  "author": "William Manco <wmanco88@gmail.com>",
+  "license": "GPLv3",
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/config/jest/shim.js"
+    ],
+    "mapCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/jest/assetsTransformer.js",
+      "\\.(css|less)$": "<rootDir>/config/jest/assetsTransformer.js"
+    },
+    "testMatch": [
+      "**/?(*.)(spec|test).js?(x)"
+    ],
+    "transform": {
+      "\\.js$": "babel-jest"
+    }
+  },
+  "dependencies": {
+    "connected-react-router": "^4.3.0",
+    "cross-env": "5.1.2",
+    "gsap": "^1.20.3",
+    "history": "^4.7.2",
+    "react": "16.2.0",
+    "react-dom": "16.2.0",
+    "react-hot-loader": "3.1.3",
+    "react-jss": "^8.2.1",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-promise-middleware": "^5.0.0",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-eslint": "8.1.2",
+    "babel-jest": "22.0.6",
+    "babel-loader": "7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-react": "6.24.1",
+    "babel-preset-react-boilerplate": "1.1.1",
+    "babel-preset-react-hmre": "1.1.1",
+    "babel-preset-stage-2": "6.24.1",
+    "copy-webpack-plugin": "4.3.0",
+    "css-loader": "0.28.8",
+    "documentation": "^5.3.5",
+    "enzyme": "3.3.0",
+    "enzyme-adapter-react-16": "1.1.1",
+    "eslint": "4.13.0",
+    "eslint-config-airbnb": "16.1.0",
+    "eslint-loader": "1.9.0",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.5.1",
+    "extract-text-webpack-plugin": "3.0.2",
+    "file-loader": "1.1.6",
+    "glslify-import-loader": "^0.1.1",
+    "glslify-loader": "^1.0.2",
+    "html-webpack-plugin": "2.30.1",
+    "husky": "0.15.0-beta.2",
+    "jest": "22.0.5",
+    "node-sass": "4.7.2",
+    "open-browser-webpack-plugin": "0.0.5",
+    "raw-loader": "^0.5.1",
+    "react-addons-test-utils": "^15.6.2",
+    "react-test-renderer": "16.2.0",
+    "rimraf": "2.6.2",
+    "sass-loader": "6.0.6",
+    "style-loader": "0.19.1",
+    "url-loader": "0.6.2",
+    "webpack": "3.10.0",
+    "webpack-bundle-analyzer": "^2.9.2",
+    "webpack-dev-server": "2.9.6"
+  }
+}
