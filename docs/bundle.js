@@ -57,7 +57,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
+/******/ 	__webpack_require__.p = "./";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 112);
@@ -67161,7 +67161,7 @@ var _temp = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(113);
-module.exports = __webpack_require__(330);
+module.exports = __webpack_require__(329);
 
 
 /***/ }),
@@ -72679,11 +72679,7 @@ var _keys = __webpack_require__(327);
 
 var _game = __webpack_require__(111);
 
-var _logo = __webpack_require__(328);
-
-var _logo2 = _interopRequireDefault(_logo);
-
-__webpack_require__(329);
+__webpack_require__(328);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -72808,7 +72804,7 @@ var App = function (_Component) {
           _layout2.default,
           null,
           _react2.default.createElement(_Distance2.default, { show: !this.props.pause, number: this.state.distance }),
-          _react2.default.createElement(_Logo2.default, { image: _logo2.default, show: this.props.pause, ready: this.props.ready, setPause: this.props.setPause }),
+          _react2.default.createElement(_Logo2.default, { show: this.props.pause, ready: this.props.ready, setPause: this.props.setPause }),
           _react2.default.createElement(_GameOver2.default, { show: this.props.gameOver, setShow: this.props.setGameOver, number: round10(this.props.distance, -2) }),
           _react2.default.createElement(_Life2.default, { show: !this.props.pause, number: _constants2.default.game.life, life: this.props.life }),
           _react2.default.createElement(_Gradient2.default, { show: this.props.pause, ready: this.props.ready }),
@@ -134252,15 +134248,15 @@ module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAMAAADD
 
 /***/ }),
 /* 311 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module parse failed: Unexpected character '\u0003' (1:3)\nYou may need an appropriate loader to handle this file type.\n(Source code omitted for this binary file)");
+module.exports = __webpack_require__.p + "audio/Hey-Saturday-Sun_Dream-Girl.mp3";
 
 /***/ }),
 /* 312 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module parse failed: Unexpected character '�' (1:0)\nYou may need an appropriate loader to handle this file type.\n(Source code omitted for this binary file)");
+module.exports = __webpack_require__.p + "audio/intro.mp3";
 
 /***/ }),
 /* 313 */
@@ -135543,16 +135539,10 @@ var _temp = function () {
 /* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "images/logo.png";
-
-/***/ }),
-/* 329 */
-/***/ (function(module, exports, __webpack_require__) {
-
 module.exports = __webpack_require__.p + "fonts/Streamster.woff";
 
 /***/ }),
-/* 330 */
+/* 329 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
