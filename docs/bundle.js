@@ -77065,6 +77065,8 @@ var Canvas = function (_Component) {
       // this.composer.addPass(starsPass)
       this.composer.addPass(filmPass);
       this.composer.addPass(oldTvPass);
+
+      this.onWindowResize = this.onWindowResize.bind(this);
     }
   }, {
     key: 'componentDidMount',
@@ -77140,13 +77142,15 @@ var Canvas = function (_Component) {
         // TweenMax.set(this.camera.rotation, { x: Math.degToRad(-90), ease: Power3.easeInOut })
         // TweenMax.set(this.camera.position, { y: 100, z: 300, ease: Power3.easeInOut })
         _gsap.TweenMax.set(this.camera.rotation, { x: _three.Math.degToRad(-60), ease: _gsap.Power3.easeInOut });
-        _gsap.TweenMax.set(this.camera.position, { y: 16, z: 490, ease: _gsap.Power3.easeInOut });
+        _gsap.TweenMax.set(this.camera.position, { y: 56, z: 490, ease: _gsap.Power3.easeInOut });
+        _gsap.TweenMax.set(this.cursor.position, { z: -100, ease: _gsap.Power3.easeOut });
       } else {
         if (this.props.pause) {
           _sono2.default.get('intro').play().loop = true;
           _gsap.TweenMax.to(_sono2.default.get('intro'), 3, { volume: 1, ease: _gsap.Power3.easeInOut });
           _gsap.TweenMax.to(this.camera.rotation, 5, { x: _three.Math.degToRad(-90), ease: _gsap.Power3.easeInOut });
           _gsap.TweenMax.to(this.camera.position, 5, { y: 100, z: 300, ease: _gsap.Power3.easeInOut });
+          _gsap.TweenMax.to(this.cursor.position, 5, { z: -100, ease: _gsap.Expo.easeOut });
           _gsap.TweenMax.to(_sono2.default.get('background'), 5, { playbackRate: 0, ease: _gsap.Power3.easeInOut, onComplete: function onComplete() {
               _sono2.default.get('background').stop();
             } });
@@ -77157,6 +77161,7 @@ var Canvas = function (_Component) {
           _gsap.TweenMax.fromTo(_sono2.default.get('background'), 1, { volume: 0 }, { volume: 0.7, ease: _gsap.Linear.easeNone });
           _sono2.default.get('background').play();
           _sono2.default.get('background').playbackRate = 1;
+          _gsap.TweenMax.to(this.cursor.position, 5, { z: 0, ease: _gsap.Expo.easeOut });
           _gsap.TweenMax.to(this.camera.rotation, 5, { x: _three.Math.degToRad(0), ease: _gsap.Power3.easeInOut });
           _gsap.TweenMax.to(this.camera.position, 5, { y: 19, z: 460, ease: _gsap.Power3.easeInOut });
           // TweenMax.to(sono.get('background'), 5, { playbackRate: clamp((this.props.difficulty * 0.8), 1, 3), ease: Power3.easeInOut })
@@ -77252,7 +77257,6 @@ var Canvas = function (_Component) {
       var _this5 = this;
 
       var domNode = document.querySelector('#root');
-
       var touch = (0, _vanillaTouchwipe2.default)(domNode, {
         wipeLeft: function wipeLeft() {
           if (!_this5.props.pause) {
@@ -77274,24 +77278,25 @@ var Canvas = function (_Component) {
             _gsap.TweenMax.to(_this5.camera.rotation, 1.5, { y: 0.1 * _this5.position, x: -0.01 * window.Math.abs(_this5.position), ease: _gsap.Power3.easeOut });
           }
         },
-        wipeUp: function wipeUp() {
-          if (_this5.props.pause) {
-            _this5.props.setPause(false);
-          } else {
-            _this5.props.setPause(true);
-          }
-        },
-        wipeDown: function wipeDown() {
-          if (_this5.props.pause) {
-            _this5.props.setPause(false);
-          } else {
-            _this5.props.setPause(true);
-          }
-        },
+        // wipeUp: () => {
+        //   if (this.props.pause) {
+        //     this.props.setPause(false)
+        //   } else {
+        //     this.props.setPause(true)
+        //   }
+        // },
+        // wipeDown: () => {
+        //   if (this.props.pause) {
+        //     this.props.setPause(false)
+        //   } else {
+        //     this.props.setPause(true)
+        //   }
+        // },
         min_move_x: 20,
         min_move_y: 20,
         preventDefaultEvents: true
       });
+      window.addEventListener('resize', this.onWindowResize, false);
     }
   }, {
     key: 'ready',
@@ -77360,6 +77365,19 @@ var Canvas = function (_Component) {
       // this.camera.position.set(0, 19, 460)
       // this.camera.rotation.set(-0.05, 0, 0)
       this.isReady = true;
+    }
+  }, {
+    key: 'onWindowResize',
+    value: function onWindowResize() {
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height);
+      this.composer.setSize(width, height);
+      this.renderer.clear();
+      this.renderer.setViewport(0, 0, width, height);
+      this.composer.render(0.5);
     }
   }, {
     key: 'render',
@@ -133785,6 +133803,7 @@ var Aliens = function (_Object3D) {
     var _this = _possibleConstructorReturn(this, (Aliens.__proto__ || Object.getPrototypeOf(Aliens)).call(this));
 
     _this.props = props;
+    _this.aliens = 5;
     _this.life = _this.props.life;
     _this.points = 0;
     _this.material = new _three.ShaderMaterial({
@@ -133806,7 +133825,7 @@ var Aliens = function (_Object3D) {
       fog: false
     });
     _this.mesh = [];
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < _this.aliens; i++) {
       _this.mesh[i] = new _three.Mesh(_this.props.geometry[_this.getRandomIntInclusive(0, 1)], _this.material);
       _this.add(_this.mesh[i]);
     }
@@ -133829,7 +133848,7 @@ var Aliens = function (_Object3D) {
   }, {
     key: 'setPosition',
     value: function setPosition() {
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < this.aliens; i++) {
         var random = this.getRandomIntInclusive(-2, 3);
         this.mesh[i].position.set((5 - 10 * random) * -1, 1, -450);
         this.mesh[i].speed = this.getRandomArbitrary(0, 0.5);
@@ -133843,9 +133862,15 @@ var Aliens = function (_Object3D) {
       // this.props.setDistance(window.Math.round(this.difficulty * 100))
       this.material.uniforms.time.value += 1;
       var difficulty = props.difficulty,
-          speed = props.speed;
+          speed = props.speed,
+          pause = props.pause;
 
-      for (var i = 0; i < 10; i++) {
+
+      if (pause) {
+        return true;
+      }
+
+      for (var i = 0; i < this.aliens; i++) {
         // console.log(props.current)
         // if (!props.pause) {
         if (!this.mesh[i].rip) {
@@ -133857,7 +133882,7 @@ var Aliens = function (_Object3D) {
             } else {
               this.points += 1;
               this.mesh[i].step = this.getRandomIntInclusive(-2, 3);
-              this.mesh[i].position.z = -450 + this.getRandomIntInclusive(0, 150);
+              this.mesh[i].position.z = -450 + this.getRandomIntInclusive(0, 350);
               this.mesh[i].position.x = (5 - 10 * this.mesh[i].step) * -1;
               this.mesh[i].position.y = 1;
               // this.mesh[i].speed = this.mesh[i].speed + ((speed * 0.01) + (difficulty * 0.0001))
@@ -134326,7 +134351,9 @@ var Logo = function (_Component) {
 
       this.$ = {
         root: document.getElementsByClassName(classes.root),
-        svgPath: document.querySelectorAll('.' + classes.svg + ' path')
+        svgPath: document.querySelectorAll('.' + classes.svg + ' path'),
+        textSpan: document.querySelectorAll('.' + classes.bottom + ' span'),
+        button: document.querySelectorAll('.' + classes.button)
       };
       this.setTimeline();
     }
@@ -134340,6 +134367,9 @@ var Logo = function (_Component) {
       }
       if (this.props.ready !== prevProps.ready) {
         if (this.props.ready) {
+          var root = this.$.root;
+
+          _gsap.TweenMax.set(root, { display: 'block' });
           this.timeline.play();
         }
       }
@@ -134363,13 +134393,24 @@ var Logo = function (_Component) {
 
       var _$ = this.$,
           root = _$.root,
-          svgPath = _$.svgPath;
+          svgPath = _$.svgPath,
+          textSpan = _$.textSpan,
+          button = _$.button;
 
-      this.timeline = new _gsap.TimelineMax({ paused: true });
-      this.timeline.fromTo(root, 2, { opacity: 0 }, { opacity: 1 }, 0);
-      setInterval(function () {
-        TweenLite.fromTo(svgPath[_this2.getRandomIntInclusive(0, svgPath.length - 1)], 2, { opacity: 0.3 }, { ease: _gsap.RoughEase.ease.config({ template: _gsap.Power0.easeNone, strength: 1, points: 20, taper: "none", randomize: true, clamp: false }), opacity: 1 });
-      }, 2000);
+      _gsap.TweenMax.set(root, { display: 'none' });
+      this.timeline = new _gsap.TimelineMax({
+        paused: true,
+        onComplete: function onComplete() {
+          _this2.interval = window.setInterval(function () {
+            TweenLite.fromTo(svgPath[_this2.getRandomIntInclusive(0, svgPath.length - 1)], 1, { opacity: 0.3 }, { ease: _gsap.RoughEase.ease.config({ template: _gsap.Power0.easeNone, strength: 1, points: 40, taper: "none", randomize: true, clamp: false }), opacity: 1 });
+          }, 600);
+        },
+        onReverseComplete: function onReverseComplete() {
+          window.clearInterval(_this2.interval);
+          _gsap.TweenMax.set(root, { display: 'none' });
+        }
+      });
+      this.timeline.staggerFromTo(svgPath, 2.5, { opacity: 0, y: 50 }, { opacity: 1, y: 0, ease: _gsap.Expo.easeOut }, 0.1, 0.2).staggerFromTo(textSpan, 2.5, { opacity: 0, x: '+=90', y: 50, scale: 1.3 }, { opacity: 1, x: 0, y: 0, scale: 1, ease: _gsap.Expo.easeOut }, 0.1, 0.4).fromTo(button, 2.5, { opacity: 0, y: 50 }, { opacity: 1, y: 0, ease: _gsap.Expo.easeOut }, 0.5);
     }
   }, {
     key: 'render',
@@ -134391,7 +134432,7 @@ var Logo = function (_Component) {
           { className: classes.top },
           _react2.default.createElement(
             'svg',
-            { className: classes.svg, xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 792 167.5' },
+            { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 892 255.5', className: classes.svg },
             _react2.default.createElement(
               'defs',
               null,
@@ -134407,19 +134448,20 @@ var Logo = function (_Component) {
                 )
               )
             ),
-            _react2.default.createElement('path', { d: 'M206.5,77.7l-94.4,71L4.1,67.6c-0.7-0.7-1.8-0.7-2.7-0.2C0.5,67.9,0,68.8,0,69.7V165c0,1.4,1.1,2.5,2.5,2.5 c1.6,0,2.7-1.1,2.7-2.5V74.9l105.5,79.3c0,0,0,0,0.2,0c0,0,0,0,0,0.2h0.2c0,0,0,0,0.2,0l0.2,0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0h0.2 c0.2,0,0.2,0,0.2,0c0.3,0,0.5,0,0.5-0.2c0.2,0,0.2,0,0.2,0c0.2,0,0.2,0,0.2-0.2c0.2,0,0.2,0,0.2,0l96.2-72.1 c1.2-0.9,1.4-2.5,0.5-3.6C209.2,77.3,207.6,77.1,206.5,77.7z' }),
-            _react2.default.createElement('path', { d: 'M222.8,50.9c-1.4,2.6-2.6,5.2-4.1,7.8v106.4c0,1.4,1.3,2.5,2.7,2.5c1.4,0,2.5-1.1,2.5-2.5v-112 C223.9,52,223.5,51.2,222.8,50.9z' }),
-            _react2.default.createElement('path', { d: 'M222.5,50.8c-0.9-0.5-2-0.5-2.7,0.2L112,132.1L5.2,51.7V41.3l105.4,79.4c0,0,0,0,0.2,0v0.2h0.2c0,0,0,0,0.2,0 c0,0.2,0.2,0.2,0.2,0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0h0.2h0.3c0.3,0,0.5,0,0.5-0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0v-0.2 c0.2,0,0.2,0,0.2,0l109.5-82.5c0.7-0.4,0.9-1.1,0.9-2V19.5c0-0.5-0.2-1.1-0.5-1.5c-1.7,2.6-3.3,5.4-4.7,8.2V35l-106.5,80.1L4.1,34 c-0.7-0.4-1.8-0.7-2.7-0.2C0.5,34.3,0,35.2,0,36.1V53c0,0.7,0.5,1.6,1.1,2l109.5,82.2c0,0,0,0,0,0.2h0.2c0,0,0,0,0.2,0 c0,0,0,0,0,0.2c0,0,0,0,0.2,0c0.3,0,0.3,0,0.5,0h0.2c0,0,0,0,0.2,0c0,0,0,0,0.2,0h0.2c0.2,0,0.2,0,0.2,0c0.3,0,0.3,0,0.5-0.2 c0,0,0,0,0.2,0c0,0,0,0,0-0.2l105.3-79.3v0.8c1.5-2.6,2.7-5.3,4.1-7.8C222.7,50.9,222.6,50.8,222.5,50.8z' }),
-            _react2.default.createElement('path', { d: 'M218.6,26.2c1.4-2.9,3-5.6,4.7-8.2c-0.2-0.3-0.5-0.6-0.9-0.8c-0.9-0.5-2-0.5-2.7,0.2L112,98.5L5.2,18.1V7.7L110.6,87 c0,0,0,0,0.2,0c0,0.2,0,0.2,0,0.2h0.2c0,0,0,0,0.2,0.2h0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0h0.2h0.3c0.3,0,0.5,0,0.5,0s0,0,0-0.2 c0.2,0,0.2,0,0.2,0s0,0,0.2,0c0.2-0.2,0.2-0.2,0.2-0.2L222.9,4.6c1.2-0.7,1.4-2.3,0.5-3.4c-0.9-1.2-2.5-1.4-3.6-0.7L112.1,81.8 L4.1,0.4C3.4,0,2.3-0.3,1.4,0.2C0.5,0.7,0,1.6,0,2.5v16.9c0,0.7,0.5,1.6,1.1,2l109.4,82.3v0.2h0.2c0,0,0,0,0.2,0c0,0.2,0,0.2,0,0.2 h0.2c0.3,0,0.3,0,0.5,0c0,0.2,0.2,0.2,0.2,0.2s0,0,0.2,0c0,0,0,0,0.2,0c0,0,0,0,0-0.2h0.2c0.2,0,0.2,0,0.2,0c0.3,0,0.3,0,0.5-0.2 c0,0,0,0,0.2,0c0-0.2,0-0.2,0-0.2l105.3-79.1V26.2z' }),
-            _react2.default.createElement('path', { d: 'M424.4,71.2c-6.9-45.5-49.5-77.1-95.3-70.3C316.5,3,305,7.5,294.4,14.4c-0.2,0.2-0.4,0.5-0.6,0.7c2.4,0.3,4.8,0.7,7.3,1.1 c8.8-5.3,18.4-8.7,28.6-10.3c21-3.2,41.7,2,58.7,14.7C405.3,33,416.3,51.3,419.5,72c1.1,7.4,1.1,14.9,0.2,22.3 c-0.3,1.3,0.6,2.7,2,2.9c1.3,0,2.7-0.9,2.9-2.3C425.5,87,425.5,79.1,424.4,71.2z' }),
-            _react2.default.createElement('path', { d: 'M382.9,150.8c-9,5.4-18.9,9.2-29.5,10.8c-21,3.1-41.7-2.1-58.6-14.7c-16.9-12.4-27.9-30.7-31.1-51.4 c-1.1-7.8-1.1-15.5,0-23.4c0.3-1.3-0.6-2.5-2-2.7c-1.5-0.3-2.7,0.6-2.9,2c-1.1,8.1-1.1,16.5,0,24.8c3.3,22.1,15.1,41.5,33.1,54.8 c14.6,10.9,31.8,16.5,49.6,16.4c4,0,8.3-0.2,12.6-0.9c12.6-2,24.3-6.5,34.7-13.7c0.6-0.4,1.1-1.1,1.1-2c0-0.1,0-0.2,0-0.3 c-2.4,0-4.8,0-7.4,0L382.9,150.8z' }),
-            _react2.default.createElement('path', { d: 'M420.8,105.7l-120.6-89c0.3-0.2,0.6-0.3,0.9-0.5c-2.4-0.4-4.8-0.8-7.3-1.1c-0.3,0.4-0.5,0.8-0.5,1.3c0,0.9,0.4,1.6,1.1,2.3 l121.9,90c-0.9,2.7-2.1,5.4-3.2,8.1L286.7,23.5c-1.1-0.9-2.5-0.7-3.4,0.2c-3.4,3.2-6.3,6.6-9,10.4c-0.9,1.1-0.6,2.7,0.5,3.6 l128.8,94.9c-1.6,1.8-3.2,3.8-5,5.6l-128.5-92c-0.6-0.5-1.3-0.7-2-0.5c-0.7,0.3-1.4,0.7-1.6,1.4c-2.1,3.9-3.6,7.9-5,12.2 c-0.2,0.9,0,2,0.9,2.7l120.1,88.5c2.6,0,5,0,7.4,0c-0.1-0.6-0.5-1.3-1.1-1.7L266.9,59.1c0.7-2.5,1.6-4.7,2.7-7.2l127.7,91.4 c0.9,0.7,2.3,0.7,3.2-0.2c3.1-2.9,5.8-6.3,8.3-9.7c0.5-0.4,0.7-1.1,0.5-1.8c0-0.7-0.4-1.3-0.9-1.8L279.7,34.9c1.8-2,3.6-4.3,5.6-6.3 l127.2,93.7c0.6,0.5,1.3,0.7,2,0.5c0.9,0,1.3-0.6,1.8-1.1c2-4.3,3.8-8.8,5.4-13.3C421.9,107.3,421.5,106.2,420.8,105.7z' }),
-            _react2.default.createElement('path', { d: 'M590.8,97.8V2.5c0-1.4-1.1-2.5-2.7-2.5c-1.4,0-2.5,1.1-2.5,2.5v90.1l-0.4-0.3c1.5,2.5,3.1,4.9,5,7 C590.6,98.8,590.8,98.3,590.8,97.8z' }),
-            _react2.default.createElement('path', { d: 'M586.6,133.5c0.7,0.4,1.8,0.7,2.5,0.2c0.9-0.5,1.6-1.4,1.6-2.3v-16.9c0-0.6-0.4-1.5-1.1-2L464.3,18.1V7.7l122.4,92.2 c0.7,0.7,1.8,0.7,2.5,0.2c0.4-0.2,0.7-0.5,1-0.9c-1.9-2.1-3.5-4.5-5-7l-122-91.9c-0.7-0.4-1.8-0.7-2.7-0.2c-0.9,0.5-1.4,1.4-1.4,2.3 v16.9c0,0.6,0.4,1.5,1.1,2l125.4,94.4v10.4L463.2,34c-0.7-0.4-1.8-0.7-2.7-0.2c-0.9,0.5-1.4,1.4-1.4,2.3V53c0,0.6,0.4,1.5,1.1,2 l125.4,94.4v10.4L463.2,67.6c-0.7-0.7-1.8-0.7-2.7-0.2c0,0,0,0,0,0c1.2,2.9,2.5,5.9,3.8,8.8v-1.3L586.6,167c0.5,0.3,0.9,0.5,1.4,0.5 c0.4,0,0.9,0,1.1-0.2c0.9-0.5,1.6-1.4,1.6-2.3v-16.9c0-0.6-0.4-1.5-1.1-2L464.3,51.7V41.3L586.6,133.5z' }),
-            _react2.default.createElement('path', { d: 'M459.1,69.7V165c0,1.4,1.1,2.5,2.5,2.5c1.6,0,2.7-1.1,2.7-2.5V76.2c-1.4-2.9-2.6-5.9-3.8-8.8 C459.6,67.9,459.1,68.8,459.1,69.7z' }),
-            _react2.default.createElement('path', { d: 'M749.5,150.8L749.5,150.8c-8.9,5.4-18.8,9.2-29.4,10.8c-21,3.1-41.7-2.1-58.6-14.7c-16.9-12.4-27.9-30.7-31.1-51.4 c-1.1-7.8-1.1-15.5,0-23.4c0.3-1.3-0.6-2.5-2-2.7c-1.5-0.3-2.7,0.6-2.9,2c-1.1,8.1-1.1,16.5,0,24.8c3.3,22.1,15.1,41.5,33.1,54.8 c14.6,10.9,31.8,16.5,49.6,16.4c4,0,8.3-0.2,12.6-0.9c12.6-2,24.3-6.5,34.7-13.7c0.6-0.4,1.1-1.1,1.1-2c0,0,0-0.1,0-0.1 C754.2,150.8,751.9,150.8,749.5,150.8z' }),
-            _react2.default.createElement('path', { d: 'M787.6,105.7L667,16.7c0.3-0.2,0.7-0.4,1-0.6c-2.6-0.5-5.1-0.7-7.7-0.7c-0.2,0.3-0.3,0.7-0.3,1c0,0.9,0.4,1.6,1.1,2.3 l121.9,90c-0.9,2.7-2.1,5.4-3.2,8.1L653.4,23.5c-1.1-0.9-2.5-0.7-3.4,0.2c-3.4,3.2-6.3,6.6-9,10.4c-0.9,1.1-0.6,2.7,0.5,3.6 l128.8,94.9c-1.6,1.8-3.2,3.8-5,5.6l-128.5-92c-0.6-0.5-1.3-0.7-2-0.5c-0.7,0.3-1.4,0.7-1.6,1.4c-2.1,3.9-3.6,7.9-5,12.2 c-0.2,0.9,0,2,0.9,2.7l120.4,88.8c2.3,0.1,4.7,0,7-0.1c0-0.6-0.4-1.4-1.1-1.9L633.6,59.1c0.7-2.5,1.6-4.7,2.7-7.2l127.9,91.4 c0.9,0.7,2.3,0.7,3.2-0.2c3.1-2.9,5.8-6.3,8.3-9.7c0.4-0.4,0.6-1.1,0.4-1.8c0-0.7-0.4-1.3-0.9-1.8L646.5,34.9c1.8-2,3.6-4.3,5.6-6.3 l127.2,93.7c0.6,0.5,1.3,0.7,2,0.5c0.9,0,1.3-0.6,1.8-1.1c2-4.3,3.8-8.8,5.4-13.3C788.7,107.3,788.3,106.2,787.6,105.7z' }),
-            _react2.default.createElement('path', { d: 'M791.1,71.2c-6.9-45.5-49.5-77.1-95.3-70.3c-12.6,2-24.1,6.5-34.7,13.5c-0.3,0.3-0.6,0.6-0.8,1c2.6,0.1,5.1,0.3,7.7,0.7 c8.7-5.3,18.3-8.7,28.5-10.2c20.9-3.2,41.7,2,58.6,14.7C772,33,783,51.3,786.2,72c1.1,7.4,1.1,14.9,0.2,22.3c-0.3,1.3,0.6,2.7,2,2.9 c1.3,0,2.7-0.9,2.9-2.3C792.2,87,792.2,79.1,791.1,71.2z' })
+            _react2.default.createElement('path', { d: 'M256.5,121.7l-94.4,71l-108-81.1c-0.7-0.7-1.8-0.7-2.7-0.2c-0.9,0.5-1.4,1.4-1.4,2.3V209c0,1.4,1.1,2.5,2.5,2.5 c1.6,0,2.7-1.1,2.7-2.5v-90.1l105.5,79.3c0,0,0,0,0.2,0c0,0,0,0,0,0.2h0.2c0,0,0,0,0.2,0l0.2,0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0h0.2 c0.2,0,0.2,0,0.2,0c0.3,0,0.5,0,0.5-0.2c0.2,0,0.2,0,0.2,0c0.2,0,0.2,0,0.2-0.2c0.2,0,0.2,0,0.2,0l96.2-72.1 c1.2-0.9,1.4-2.5,0.5-3.6C259.2,121.3,257.6,121.1,256.5,121.7z' }),
+            _react2.default.createElement('path', { d: 'M272.8,94.9c-1.4,2.6-2.6,5.2-4.1,7.8v106.4c0,1.4,1.3,2.5,2.7,2.5s2.5-1.1,2.5-2.5v-112C273.9,96,273.5,95.2,272.8,94.9z'
+            }),
+            _react2.default.createElement('path', { d: 'M272.5,94.8c-0.9-0.5-2-0.5-2.7,0.2L162,176.1L55.2,95.7V85.3l105.4,79.4c0,0,0,0,0.2,0v0.2h0.2c0,0,0,0,0.2,0 c0,0.2,0.2,0.2,0.2,0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0h0.2h0.3c0.3,0,0.5,0,0.5-0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0v-0.2 c0.2,0,0.2,0,0.2,0l109.5-82.5c0.7-0.4,0.9-1.1,0.9-2V63.5c0-0.5-0.2-1.1-0.5-1.5c-1.7,2.6-3.3,5.4-4.7,8.2V79l-106.5,80.1L54.1,78 c-0.7-0.4-1.8-0.7-2.7-0.2c-0.9,0.5-1.4,1.4-1.4,2.3V97c0,0.7,0.5,1.6,1.1,2l109.5,82.2c0,0,0,0,0,0.2h0.2c0,0,0,0,0.2,0 c0,0,0,0,0,0.2c0,0,0,0,0.2,0c0.3,0,0.3,0,0.5,0h0.2c0,0,0,0,0.2,0c0,0,0,0,0.2,0h0.2c0.2,0,0.2,0,0.2,0c0.3,0,0.3,0,0.5-0.2 c0,0,0,0,0.2,0c0,0,0,0,0-0.2l105.3-79.3v0.8c1.5-2.6,2.7-5.3,4.1-7.8C272.7,94.9,272.6,94.8,272.5,94.8z' }),
+            _react2.default.createElement('path', { d: 'M268.6,70.2c1.4-2.9,3-5.6,4.7-8.2c-0.2-0.3-0.5-0.6-0.9-0.8c-0.9-0.5-2-0.5-2.7,0.2L162,142.5L55.2,62.1V51.7L160.6,131 c0,0,0,0,0.2,0c0,0.2,0,0.2,0,0.2h0.2c0,0,0,0,0.2,0.2h0.2c0.2,0,0.2,0,0.2,0s0,0,0.2,0h0.2h0.3c0.3,0,0.5,0,0.5,0s0,0,0-0.2 c0.2,0,0.2,0,0.2,0s0,0,0.2,0c0.2-0.2,0.2-0.2,0.2-0.2l109.5-82.4c1.2-0.7,1.4-2.3,0.5-3.4c-0.9-1.2-2.5-1.4-3.6-0.7l-107.7,81.3 l-108-81.4c-0.7-0.4-1.8-0.7-2.7-0.2c-0.9,0.5-1.4,1.4-1.4,2.3v16.9c0,0.7,0.5,1.6,1.1,2l109.4,82.3v0.2h0.2c0,0,0,0,0.2,0 c0,0.2,0,0.2,0,0.2h0.2c0.3,0,0.3,0,0.5,0c0,0.2,0.2,0.2,0.2,0.2s0,0,0.2,0c0,0,0,0,0.2,0c0,0,0,0,0-0.2h0.2c0.2,0,0.2,0,0.2,0 c0.3,0,0.3,0,0.5-0.2c0,0,0,0,0.2,0c0-0.2,0-0.2,0-0.2l105.3-79.1L268.6,70.2L268.6,70.2z' }),
+            _react2.default.createElement('path', { d: 'M474.4,115.2c-6.9-45.5-49.5-77.1-95.3-70.3c-12.6,2.1-24.1,6.6-34.7,13.5c-0.2,0.2-0.4,0.5-0.6,0.7 c2.4,0.3,4.8,0.7,7.3,1.1c8.8-5.3,18.4-8.7,28.6-10.3c21-3.2,41.7,2,58.7,14.7c16.9,12.4,27.9,30.7,31.1,51.4 c1.1,7.4,1.1,14.9,0.2,22.3c-0.3,1.3,0.6,2.7,2,2.9c1.3,0,2.7-0.9,2.9-2.3C475.5,131,475.5,123.1,474.4,115.2z' }),
+            _react2.default.createElement('path', { d: 'M432.9,194.8c-9,5.4-18.9,9.2-29.5,10.8c-21,3.1-41.7-2.1-58.6-14.7c-16.9-12.4-27.9-30.7-31.1-51.4 c-1.1-7.8-1.1-15.5,0-23.4c0.3-1.3-0.6-2.5-2-2.7c-1.5-0.3-2.7,0.6-2.9,2c-1.1,8.1-1.1,16.5,0,24.8c3.3,22.1,15.1,41.5,33.1,54.8 c14.6,10.9,31.8,16.5,49.6,16.4c4,0,8.3-0.2,12.6-0.9c12.6-2,24.3-6.5,34.7-13.7c0.6-0.4,1.1-1.1,1.1-2c0-0.1,0-0.2,0-0.3 c-2.4,0-4.8,0-7.4,0L432.9,194.8z' }),
+            _react2.default.createElement('path', { d: 'M470.8,149.7l-120.6-89c0.3-0.2,0.6-0.3,0.9-0.5c-2.4-0.4-4.8-0.8-7.3-1.1c-0.3,0.4-0.5,0.8-0.5,1.3c0,0.9,0.4,1.6,1.1,2.3 l121.9,90c-0.9,2.7-2.1,5.4-3.2,8.1L336.7,67.5c-1.1-0.9-2.5-0.7-3.4,0.2c-3.4,3.2-6.3,6.6-9,10.4c-0.9,1.1-0.6,2.7,0.5,3.6 l128.8,94.9c-1.6,1.8-3.2,3.8-5,5.6l-128.5-92c-0.6-0.5-1.3-0.7-2-0.5c-0.7,0.3-1.4,0.7-1.6,1.4c-2.1,3.9-3.6,7.9-5,12.2 c-0.2,0.9,0,2,0.9,2.7l120.1,88.5c2.6,0,5,0,7.4,0c-0.1-0.6-0.5-1.3-1.1-1.7l-121.9-89.7c0.7-2.5,1.6-4.7,2.7-7.2l127.7,91.4 c0.9,0.7,2.3,0.7,3.2-0.2c3.1-2.9,5.8-6.3,8.3-9.7c0.5-0.4,0.7-1.1,0.5-1.8c0-0.7-0.4-1.3-0.9-1.8L329.7,78.9c1.8-2,3.6-4.3,5.6-6.3 l127.2,93.7c0.6,0.5,1.3,0.7,2,0.5c0.9,0,1.3-0.6,1.8-1.1c2-4.3,3.8-8.8,5.4-13.3C471.9,151.3,471.5,150.2,470.8,149.7z' }),
+            _react2.default.createElement('path', { d: 'M640.8,141.8V46.5c0-1.4-1.1-2.5-2.7-2.5c-1.4,0-2.5,1.1-2.5,2.5v90.1l-0.4-0.3c1.5,2.5,3.1,4.9,5,7 C640.6,142.8,640.8,142.3,640.8,141.8z' }),
+            _react2.default.createElement('path', { d: 'M636.6,177.5c0.7,0.4,1.8,0.7,2.5,0.2c0.9-0.5,1.6-1.4,1.6-2.3v-16.9c0-0.6-0.4-1.5-1.1-2L514.3,62.1V51.7l122.4,92.2 c0.7,0.7,1.8,0.7,2.5,0.2c0.4-0.2,0.7-0.5,1-0.9c-1.9-2.1-3.5-4.5-5-7l-122-91.9c-0.7-0.4-1.8-0.7-2.7-0.2c-0.9,0.5-1.4,1.4-1.4,2.3 v16.9c0,0.6,0.4,1.5,1.1,2l125.4,94.4v10.4L513.2,78c-0.7-0.4-1.8-0.7-2.7-0.2c-0.9,0.5-1.4,1.4-1.4,2.3V97c0,0.6,0.4,1.5,1.1,2 l125.4,94.4v10.4l-122.4-92.2c-0.7-0.7-1.8-0.7-2.7-0.2l0,0c1.2,2.9,2.5,5.9,3.8,8.8v-1.3L636.6,211c0.5,0.3,0.9,0.5,1.4,0.5 c0.4,0,0.9,0,1.1-0.2c0.9-0.5,1.6-1.4,1.6-2.3v-16.9c0-0.6-0.4-1.5-1.1-2L514.3,95.7V85.3L636.6,177.5z' }),
+            _react2.default.createElement('path', { d: 'M509.1,113.7V209c0,1.4,1.1,2.5,2.5,2.5c1.6,0,2.7-1.1,2.7-2.5v-88.8c-1.4-2.9-2.6-5.9-3.8-8.8 C509.6,111.9,509.1,112.8,509.1,113.7z' }),
+            _react2.default.createElement('path', { d: 'M799.5,194.8L799.5,194.8c-8.9,5.4-18.8,9.2-29.4,10.8c-21,3.1-41.7-2.1-58.6-14.7c-16.9-12.4-27.9-30.7-31.1-51.4 c-1.1-7.8-1.1-15.5,0-23.4c0.3-1.3-0.6-2.5-2-2.7c-1.5-0.3-2.7,0.6-2.9,2c-1.1,8.1-1.1,16.5,0,24.8c3.3,22.1,15.1,41.5,33.1,54.8 c14.6,10.9,31.8,16.5,49.6,16.4c4,0,8.3-0.2,12.6-0.9c12.6-2,24.3-6.5,34.7-13.7c0.6-0.4,1.1-1.1,1.1-2v-0.1 C804.2,194.8,801.9,194.8,799.5,194.8z' }),
+            _react2.default.createElement('path', { d: 'M837.6,149.7L717,60.7c0.3-0.2,0.7-0.4,1-0.6c-2.6-0.5-5.1-0.7-7.7-0.7c-0.2,0.3-0.3,0.7-0.3,1c0,0.9,0.4,1.6,1.1,2.3 l121.9,90c-0.9,2.7-2.1,5.4-3.2,8.1L703.4,67.5c-1.1-0.9-2.5-0.7-3.4,0.2c-3.4,3.2-6.3,6.6-9,10.4c-0.9,1.1-0.6,2.7,0.5,3.6 l128.8,94.9c-1.6,1.8-3.2,3.8-5,5.6l-128.5-92c-0.6-0.5-1.3-0.7-2-0.5c-0.7,0.3-1.4,0.7-1.6,1.4c-2.1,3.9-3.6,7.9-5,12.2 c-0.2,0.9,0,2,0.9,2.7l120.4,88.8c2.3,0.1,4.7,0,7-0.1c0-0.6-0.4-1.4-1.1-1.9l-121.8-89.7c0.7-2.5,1.6-4.7,2.7-7.2l127.9,91.4 c0.9,0.7,2.3,0.7,3.2-0.2c3.1-2.9,5.8-6.3,8.3-9.7c0.4-0.4,0.6-1.1,0.4-1.8c0-0.7-0.4-1.3-0.9-1.8L696.5,78.9c1.8-2,3.6-4.3,5.6-6.3 l127.2,93.7c0.6,0.5,1.3,0.7,2,0.5c0.9,0,1.3-0.6,1.8-1.1c2-4.3,3.8-8.8,5.4-13.3C838.7,151.3,838.3,150.2,837.6,149.7z' }),
+            _react2.default.createElement('path', { d: 'M841.1,115.2c-6.9-45.5-49.5-77.1-95.3-70.3c-12.6,2-24.1,6.5-34.7,13.5c-0.3,0.3-0.6,0.6-0.8,1c2.6,0.1,5.1,0.3,7.7,0.7 c8.7-5.3,18.3-8.7,28.5-10.2c20.9-3.2,41.7,2,58.6,14.7C822,77,833,95.3,836.2,116c1.1,7.4,1.1,14.9,0.2,22.3 c-0.3,1.3,0.6,2.7,2,2.9c1.3,0,2.7-0.9,2.9-2.3C842.2,131,842.2,123.1,841.1,115.2z' })
           )
         ),
         _react2.default.createElement(
@@ -134454,7 +134496,41 @@ var Logo = function (_Component) {
         _react2.default.createElement(
           'button',
           { className: classes.button, onClick: this.handleClick },
-          'start'
+          _react2.default.createElement(
+            'svg',
+            { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 109.4 95' },
+            _react2.default.createElement(
+              'defs',
+              null,
+              _react2.default.createElement(
+                'filter',
+                { id: 'glowButton' },
+                _react2.default.createElement('feGaussianBlur', { stdDeviation: '5', result: 'coloredBlur' }),
+                _react2.default.createElement(
+                  'feMerge',
+                  null,
+                  _react2.default.createElement('feMergeNode', { 'in': 'coloredBlur' }),
+                  _react2.default.createElement('feMergeNode', { 'in': 'SourceGraphic' })
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'g',
+              { className: 'g1', style: { fillOpacity: 0.9 } },
+              _react2.default.createElement('path', { d: 'M35.7,78.1l-18.5-32L35.7,14h36.9l18.5,32L72.7,78L35.7,78.1z M23,46.1l15.6,27h31.2l15.6-27L69.8,19H38.6L23,46.1z' })
+            ),
+            _react2.default.createElement(
+              'g',
+              { className: 'g2', style: { fillOpacity: 0.5 } },
+              _react2.default.createElement('path', { d: 'M33.4,84.5l-21.3-37l21.3-37H76l21.3,37L76,84.5H33.4z M13.3,47.5l20.7,36h41.4l20.7-36l-20.7-36H34L13.3,47.5z' })
+            ),
+            _react2.default.createElement('polygon', { points: '59.6,45.7 54.5,45.7 54.5,40.5 53.7,40.5 53.7,45.7 48.6,45.7 48.6,46.4 53.7,46.4 53.7,51.5 54.5,51.5 54.5,46.4 59.6,46.4 ' })
+          ),
+          _react2.default.createElement(
+            'span',
+            null,
+            'start game'
+          )
         ),
         _react2.default.createElement('div', { className: classes.gradient })
       );
@@ -134513,23 +134589,49 @@ var style = function style(theme) {
     bottom: {
       fontFamily: theme.fonts[1],
       textAlign: 'center',
-      color: theme.colors[0],
+      color: '#fb3be9',
       fontSize: '140px',
       marginTop: '-100px',
       WebkitFontSmoothing: 'antialiased',
       MozOsxFontSmoothing: 'grayscale',
-      textShadow: '0 0 17px ' + theme.colors[0]
+      textShadow: '0 0 17px ' + theme.colors[0],
+      '& span': {
+        display: 'inline-block'
+      }
     },
     button: {
+      position: 'relative',
+      top: '100px',
       margin: '0 auto',
       display: 'block',
       background: 'none',
       border: 'none',
       color: '#fff',
       textTransform: 'uppercase',
-      fontSize: '11px',
-      letterSpacing: '2px',
-      fontStyle: 'oblique'
+      fontFamily: theme.fonts[0],
+      letterSpacing: '4px',
+      outline: 'none',
+      '& svg': {
+        marginBottom: 10,
+        fill: theme.colors[0],
+        opacity: '0.8',
+        width: '84px',
+        height: 'auto',
+        display: 'block',
+        '& polygon, & path': {
+          filter: 'url(#glowButton)',
+          transform: 'scale(1.07)',
+          transformOrigin: 'center center'
+        },
+        '& .g2': {
+          transform: 'scale(1.1)',
+          transformOrigin: 'center center'
+        }
+      },
+      '& span': {
+        fontSize: '12px',
+        WebkitFontSmoothing: 'antialiased'
+      }
     }
   };
 };
@@ -134679,7 +134781,7 @@ var style = function style(theme) {
       height: '500px',
       zIndex: '1',
       transform: 'translateY(50%) scale(3)',
-      background: 'radial-gradient(ellipse at center, rgba(231,55,155,0.3) 0%,rgba(231,55,155,0) 50%)'
+      background: 'radial-gradient(ellipse at center, rgba(67,33,80,1) 0%,rgba(67,33,80,0) 50%)'
     }
   };
 };
