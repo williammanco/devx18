@@ -67217,6 +67217,12 @@ var Button = function (_Component) {
         button: document.getElementsByClassName(classes.button)
       };
       this.setTimeline();
+      if (this.props.show) {
+        var root = this.$.root;
+
+        TweenMax.set(root, { display: 'block' });
+        this.timeline.play();
+      }
     }
   }, {
     key: 'componentDidUpdate',
@@ -67246,7 +67252,11 @@ var Button = function (_Component) {
   }, {
     key: 'handleClick',
     value: function handleClick() {
-      this.props.setPause(false);
+      if (this.props.gameOver) {
+        this.props.setGameOver(false);
+      } else {
+        this.props.setPause(false);
+      }
     }
   }, {
     key: 'setTimeline',
@@ -67479,7 +67489,7 @@ var Button = function (_Component) {
           _react2.default.createElement(
             'span',
             null,
-            'start game'
+            this.props.label
           )
         )
       );
@@ -67488,6 +67498,10 @@ var Button = function (_Component) {
 
   return Button;
 }(_react.Component);
+
+Button.defaultProps = {
+  label: 'start game'
+};
 
 var _default = (0, _reactJss2.default)(_style2.default)(Button);
 
@@ -73119,8 +73133,6 @@ var App = function (_Component) {
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate(prevProps) {
-      var _this2 = this;
-
       if (this.props.pause !== prevProps.pause) {
         if (this.props.pause) {
           _gsap.TweenMax.to(_state.state, 3, { speed: 0, ease: Power4.easeOut });
@@ -73141,31 +73153,31 @@ var App = function (_Component) {
           });
           this.t = 0;
         } else {
-          setTimeout(function () {
-            _this2.props.setGameOver(false);
-          }, 10000);
+          // setTimeout(() => {
+          //   this.props.setGameOver(false)
+          // }, 10000)
         }
       }
     }
   }, {
     key: 'events',
     value: function events() {
-      var _this3 = this;
+      var _this2 = this;
 
       document.addEventListener('keydown', function (event) {
         var keyName = event.key;
-        _this3.props.setKey(keyName);
+        _this2.props.setKey(keyName);
         if (keyName === 'p') {
-          if (_this3.props.pause) {
-            _this3.props.setGameOver(false);
+          if (_this2.props.pause) {
+            _this2.props.setGameOver(false);
           } else {
-            _this3.props.setPause(true);
-            _this3.props.setGameOver(true);
+            _this2.props.setPause(true);
+            _this2.props.setGameOver(true);
           }
         }
       });
       document.addEventListener('keyup', function () {
-        _this3.props.setKey(false);
+        _this2.props.setKey(false);
       });
     }
   }, {
@@ -73195,7 +73207,7 @@ var App = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this3 = this;
 
       var location = this.props.history.location;
 
@@ -73210,14 +73222,14 @@ var App = function (_Component) {
           _react2.default.createElement(_Level2.default, { show: !this.props.pause, number: this.state.level }),
           _react2.default.createElement(_Distance2.default, { show: !this.props.pause, number: this.state.distance }),
           _react2.default.createElement(_Logo2.default, { show: this.props.pause, ready: this.props.ready, setPause: this.props.setPause }),
-          _react2.default.createElement(_GameOver2.default, { show: this.props.gameOver, setShow: this.props.setGameOver, number: round10(this.props.distance, -2) }),
+          _react2.default.createElement(_GameOver2.default, { show: this.props.gameOver, setGameOver: this.props.setGameOver, number: round10(this.props.distance, -2) }),
           _react2.default.createElement(_Life2.default, { show: !this.props.pause, number: _constants2.default.game.life, life: this.props.life }),
           _react2.default.createElement(_Gradient2.default, { show: this.props.pause, ready: this.props.ready }),
           _react2.default.createElement(_canvas2.default, {
             speed: _state.state.speed,
             difficulty: _state.state.level,
             onRef: function onRef(ref) {
-              return _this4.canvas = ref;
+              return _this3.canvas = ref;
             }
           })
         )
@@ -134243,7 +134255,7 @@ var Aliens = function (_Object3D) {
       },
       vertexShader: _main2.default,
       fragmentShader: _main4.default,
-      wireframe: true,
+      wireframe: false,
       transparent: true,
       fog: false
     });
@@ -134983,7 +134995,7 @@ var style = function style(theme) {
         height: 'auto',
         display: 'block',
         '& polygon, & path': {
-          filter: 'url(#glowButton)',
+          // filter: 'url(#glowButton)',
           transform: 'scale(1.07)',
           transformOrigin: 'center center'
         },
@@ -135338,18 +135350,25 @@ var GameOver = function (_Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var classes = this.props.classes;
+      var _props = this.props,
+          classes = _props.classes,
+          root = _props.root;
 
       this.$ = {
         root: document.getElementsByClassName(classes.root)
       };
       this.setTimeline();
+      TweenMax.set(this.$.root, { display: 'none' });
     }
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate(prevProps) {
+      var classes = this.props.classes;
+      var root = this.$.root;
+
       if (this.props.show !== prevProps.show) {
         if (this.props.show) {
+          TweenMax.set(root, { display: 'block' });
           this.timeline.play();
         } else {
           this.timeline.pause().reverse();
@@ -135362,28 +135381,14 @@ var GameOver = function (_Component) {
       this.props.setShow('false');
     }
   }, {
-    key: 'setTimeline',
-    value: function setTimeline() {
-      var root = this.$.root;
-
-      this.timeline = new _gsap.TimelineMax({ paused: true });
-      this.timeline.fromTo(root, 2, { opacity: 0 }, { opacity: 1 }, 0);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
+    key: 'getRenderContent',
+    value: function getRenderContent() {
       var classes = this.props.classes;
 
-      return _react2.default.createElement(
+      this.renderContent = false;
+      this.renderContent = _react2.default.createElement(
         'div',
-        {
-          className: classes.root,
-          ref: function ref(node) {
-            return _this2.node = node;
-          }
-        },
+        null,
         _react2.default.createElement(
           'div',
           { className: classes.label },
@@ -135407,7 +135412,40 @@ var GameOver = function (_Component) {
           'div',
           { className: classes.text },
           this.props.text
-        )
+        ),
+        _react2.default.createElement(_Button2.default, { gameOver: true, ready: this.props.ready, show: this.props.show, setGameOver: this.props.setGameOver, label: 'restart' })
+      );
+      return this.renderContent;
+    }
+  }, {
+    key: 'setTimeline',
+    value: function setTimeline() {
+      var root = this.$.root;
+
+      this.timeline = new _gsap.TimelineMax({
+        paused: true,
+        onReverseComplete: function onReverseComplete() {
+          TweenMax.set(root, { display: 'none' });
+        }
+      });
+      this.timeline.fromTo(root, 2, { opacity: 0 }, { opacity: 1 }, 0);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var classes = this.props.classes;
+
+      return _react2.default.createElement(
+        'div',
+        {
+          className: classes.root,
+          ref: function ref(node) {
+            return _this2.node = node;
+          }
+        },
+        this.getRenderContent()
       );
     }
   }]);
@@ -135459,7 +135497,8 @@ var style = function style(theme) {
       left: '50%',
       margin: '0',
       position: 'absolute',
-      transform: 'translate(-50%, -50%)'
+      transform: 'translate(-50%, -50%)',
+      zIndex: 2
     },
     label: {
       color: '#fff',
@@ -135867,7 +135906,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var style = function style(theme) {
   return {
     root: {
-      top: '160px',
+      top: '130px',
       right: '0',
       margin: '0',
       position: 'absolute',
