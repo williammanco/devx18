@@ -67225,13 +67225,19 @@ var Button = function (_Component) {
         if (!this.props.show) {
           window.clearInterval(this.interval);
           this.timeline.pause().reverse();
+        } else {
+          var root = this.$.root;
+
+          TweenMax.set(root, { display: 'block' });
+          // this.hover()
+          this.timeline.play();
         }
       }
       if (this.props.ready !== prevProps.ready) {
         if (this.props.ready) {
-          var root = this.$.root;
+          var _root = this.$.root;
 
-          TweenMax.set(root, { display: 'block' });
+          TweenMax.set(_root, { display: 'block' });
           // this.hover()
           this.timeline.play();
         }
@@ -73113,6 +73119,8 @@ var App = function (_Component) {
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate(prevProps) {
+      var _this2 = this;
+
       if (this.props.pause !== prevProps.pause) {
         if (this.props.pause) {
           _gsap.TweenMax.to(_state.state, 3, { speed: 0, ease: Power4.easeOut });
@@ -73122,26 +73130,42 @@ var App = function (_Component) {
       }
       if (this.props.gameOver !== prevProps.gameOver) {
         this.props.setDistance(_state.state.distance);
+        if (!this.props.gameOver) {
+          this.props.setLife(3);
+          this.props.setDistance(0);
+          this.props.setScore(0);
+          this.props.setPause(false);
+          this.setState({
+            distance: 0,
+            speed: 0
+          });
+          this.t = 0;
+        } else {
+          setTimeout(function () {
+            _this2.props.setGameOver(false);
+          }, 10000);
+        }
       }
     }
   }, {
     key: 'events',
     value: function events() {
-      var _this2 = this;
+      var _this3 = this;
 
       document.addEventListener('keydown', function (event) {
         var keyName = event.key;
-        _this2.props.setKey(keyName);
+        _this3.props.setKey(keyName);
         if (keyName === 'p') {
-          if (_this2.props.pause) {
-            _this2.props.setPause(false);
+          if (_this3.props.pause) {
+            _this3.props.setGameOver(false);
           } else {
-            _this2.props.setPause(true);
+            _this3.props.setPause(true);
+            _this3.props.setGameOver(true);
           }
         }
       });
       document.addEventListener('keyup', function () {
-        _this2.props.setKey(false);
+        _this3.props.setKey(false);
       });
     }
   }, {
@@ -73171,7 +73195,7 @@ var App = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var location = this.props.history.location;
 
@@ -73193,7 +73217,7 @@ var App = function (_Component) {
             speed: _state.state.speed,
             difficulty: _state.state.level,
             onRef: function onRef(ref) {
-              return _this3.canvas = ref;
+              return _this4.canvas = ref;
             }
           })
         )
@@ -134253,6 +134277,8 @@ var Aliens = function (_Object3D) {
         this.mesh[i].position.set((5 - 10 * random) * -1, 1, -450);
         this.mesh[i].speed = this.getRandomArbitrary(0, 0.5);
         this.mesh[i].step = random;
+        this.mesh[i].rip = false;
+        this.mesh[i].visible = true;
       }
     }
   }, {
@@ -134273,6 +134299,13 @@ var Aliens = function (_Object3D) {
       for (var i = 0; i < this.aliens; i++) {
         // console.log(props.current)
         // if (!props.pause) {
+        if (this.life <= 0) {
+          this.props.setPause(true);
+          this.props.setGameOver(true);
+          this.setPosition();
+          this.life = this.props.life;
+          return true;
+        }
         if (!this.mesh[i].rip) {
           if (this.mesh[i].position.z > 430 && !this.stop) {
             if (props.current === this.mesh[i].step) {
@@ -134294,10 +134327,6 @@ var Aliens = function (_Object3D) {
           } else {
             this.mesh[i].position.z += this.mesh[i].speed + difficulty * 0.08;
           }
-        }
-        if (this.life <= 0) {
-          this.props.setPause(true);
-          this.props.setGameOver(true);
         }
         // }
 
