@@ -67429,7 +67429,7 @@ var Button = function (_Component) {
                 _react2.default.createElement(
                   'filter',
                   { id: 'glowButton' },
-                  _react2.default.createElement('feGaussianBlur', { stdDeviation: '5', result: 'coloredBlur' }),
+                  _react2.default.createElement('feGaussianBlur', { stdDeviation: '2', result: 'coloredBlur' }),
                   _react2.default.createElement(
                     'feMerge',
                     null,
@@ -67441,7 +67441,7 @@ var Button = function (_Component) {
               _react2.default.createElement(
                 'g',
                 { style: { fillOpacity: 0.9 } },
-                _react2.default.createElement('path', { d: 'M36.2,79.6l-18.5-32l18.5-32.1h36.9l18.5,32l-18.4,32L36.2,79.6z M23.5,47.5l15.6,27h31.2l15.6-27L70.3,20.5H39.1L23.5,47.5z' })
+                _react2.default.createElement('path', { d: 'M37.3,77.8L19.8,47.5l17.5-30.3h34.8l17.5,30.2L72.2,77.7L37.3,77.8z M25.3,47.5L40,73h29.4l14.7-25.5L69.5,22H40 L25.3,47.5z' })
               )
             ),
             _react2.default.createElement(
@@ -67464,7 +67464,7 @@ var Button = function (_Component) {
               ),
               _react2.default.createElement(
                 'g',
-                { style: { fillOpacity: 0.5 } },
+                { style: { fillOpacity: 0.3 } },
                 _react2.default.createElement('path', { d: 'M33.4,84.5l-21.3-37l21.3-37H76l21.3,37L76,84.5H33.4z M13.3,47.5l20.7,36h41.4l20.7-36l-20.7-36H34L13.3,47.5z' })
               ),
               _react2.default.createElement('polygon', { points: '60.2,47.1 55.1,47.1 55.1,42 54.3,42 54.3,47.1 49.2,47.1 49.2,47.9 54.3,47.9 54.3,53 55.1,53 55.1,47.9 60.2,47.9 ' })
@@ -67533,7 +67533,7 @@ module.exports = hexToRgba;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(115);
-module.exports = __webpack_require__(334);
+module.exports = __webpack_require__(335);
 
 
 /***/ }),
@@ -73027,23 +73027,23 @@ var _Logo = __webpack_require__(318);
 
 var _Logo2 = _interopRequireDefault(_Logo);
 
-var _Gradient = __webpack_require__(321);
+var _Gradient = __webpack_require__(322);
 
 var _Gradient2 = _interopRequireDefault(_Gradient);
 
-var _GameOver = __webpack_require__(323);
+var _GameOver = __webpack_require__(324);
 
 var _GameOver2 = _interopRequireDefault(_GameOver);
 
-var _Distance = __webpack_require__(325);
+var _Distance = __webpack_require__(326);
 
 var _Distance2 = _interopRequireDefault(_Distance);
 
-var _Level = __webpack_require__(327);
+var _Level = __webpack_require__(328);
 
 var _Level2 = _interopRequireDefault(_Level);
 
-var _Life = __webpack_require__(329);
+var _Life = __webpack_require__(330);
 
 var _Life2 = _interopRequireDefault(_Life);
 
@@ -73051,11 +73051,11 @@ var _state = __webpack_require__(109);
 
 var _loader = __webpack_require__(110);
 
-var _keys = __webpack_require__(332);
+var _keys = __webpack_require__(333);
 
 var _game = __webpack_require__(111);
 
-__webpack_require__(333);
+__webpack_require__(334);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -134733,7 +134733,11 @@ var _Button = __webpack_require__(112);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _style = __webpack_require__(320);
+var _lights = __webpack_require__(320);
+
+var _lights2 = _interopRequireDefault(_lights);
+
+var _style = __webpack_require__(321);
 
 var _style2 = _interopRequireDefault(_style);
 
@@ -134762,6 +134766,7 @@ var Logo = function (_Component) {
       this.$ = {
         root: document.getElementsByClassName(classes.root),
         svgPath: document.querySelectorAll('.' + classes.svg + ' path'),
+        bottom: document.querySelectorAll('.' + classes.bottom),
         textSpan: document.querySelectorAll('.' + classes.bottom + ' span'),
         button: document.querySelectorAll('.' + classes.button)
       };
@@ -134801,7 +134806,8 @@ var Logo = function (_Component) {
           root = _$.root,
           svgPath = _$.svgPath,
           textSpan = _$.textSpan,
-          button = _$.button;
+          button = _$.button,
+          bottom = _$.bottom;
 
       _gsap.TweenMax.set(root, { display: 'none' });
       this.timeline = new _gsap.TimelineMax({
@@ -134815,7 +134821,9 @@ var Logo = function (_Component) {
           _gsap.TweenMax.set(root, { display: 'none' });
         }
       });
-      this.timeline.staggerFromTo(svgPath, 2.5, { opacity: 0, y: 50 }, { opacity: 1, y: 0, ease: _gsap.Expo.easeOut }, 0.1, 0.2).staggerFromTo(textSpan, 2.5, { opacity: 0, x: '+=90', y: 50, scale: 1.3 }, { opacity: 1, x: 0, y: 0, scale: 1, ease: _gsap.Expo.easeOut }, 0.1, 0.4);
+      this.timeline.staggerFromTo(svgPath, 2.5, { opacity: 0, y: '+=70' }, { opacity: 1, y: 0, ease: _gsap.Expo.easeOut }, 0.05, 0.2)
+      // .staggerFromTo(textSpan, 2.5, {opacity: 0, x: '+=90', y: 50, scale: 1.3 }, {opacity: 1, x: 0, y: 0,  scale: 1, ease: Expo.easeOut }, 0.1, 0.4)
+      .fromTo(bottom, 2.5, { opacity: 0, y: 50 }, { opacity: 1, y: 0, ease: _gsap.Expo.easeOut }, 0.2);
     }
   }, {
     key: 'render',
@@ -134844,7 +134852,7 @@ var Logo = function (_Component) {
               _react2.default.createElement(
                 'filter',
                 { id: 'glow' },
-                _react2.default.createElement('feGaussianBlur', { stdDeviation: '5', result: 'coloredBlur' }),
+                _react2.default.createElement('feGaussianBlur', { stdDeviation: '2', result: 'coloredBlur' }),
                 _react2.default.createElement(
                   'feMerge',
                   null,
@@ -134872,31 +134880,7 @@ var Logo = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: classes.bottom },
-          _react2.default.createElement(
-            'span',
-            null,
-            'l'
-          ),
-          _react2.default.createElement(
-            'span',
-            null,
-            'i'
-          ),
-          _react2.default.createElement(
-            'span',
-            null,
-            'g'
-          ),
-          _react2.default.createElement(
-            'span',
-            null,
-            'h'
-          ),
-          _react2.default.createElement(
-            'span',
-            null,
-            't'
-          )
+          _react2.default.createElement('img', { src: _lights2.default, alt: 'monolights' })
         ),
         _react2.default.createElement(_Button2.default, { ready: this.props.ready, show: this.props.show, setPause: this.props.setPause }),
         _react2.default.createElement('div', { className: classes.gradient })
@@ -134937,7 +134921,7 @@ Object.defineProperty(exports, "__esModule", {
 var style = function style(theme) {
   return {
     root: {
-      bottom: '-120px',
+      bottom: '-150px',
       position: 'absolute',
       width: '100%'
     },
@@ -134950,6 +134934,8 @@ var style = function style(theme) {
       cursor: 'pointer',
       position: 'relative',
       // top: '100px',
+      width: '108px',
+      paddingTop: '95px',
       margin: '0 auto',
       display: 'block',
       background: 'none',
@@ -134959,13 +134945,12 @@ var style = function style(theme) {
       fontFamily: theme.fonts[0],
       letterSpacing: '4px',
       outline: 'none',
-      paddingTop: '84px',
       '& svg': {
         marginBottom: 10,
         position: 'absolute',
         top: '0',
         fill: '#bb45a9',
-        width: '84px',
+        width: '95px',
         height: 'auto',
         display: 'block',
         '& polygon, & path': {
@@ -135006,6 +134991,12 @@ var _temp = function () {
 /* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__.p + "images/lights.png";
+
+/***/ }),
+/* 321 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -135024,7 +135015,7 @@ var style = function style(theme) {
     },
     top: {
       fill: theme.colors[1],
-      width: '565px'
+      width: '650px'
     },
     svg: {
       '& path': {
@@ -135033,15 +135024,21 @@ var style = function style(theme) {
     },
     bottom: {
       fontFamily: theme.fonts[1],
+      width: '415px',
+      margin: '-150px auto',
+      paddingLeft: '20px',
       textAlign: 'center',
       color: '#fb3be8',
       fontSize: '140px',
-      marginTop: '-100px',
       WebkitFontSmoothing: 'antialiased',
       MozOsxFontSmoothing: 'grayscale',
       textShadow: '-9px 0px 12px rgba(0, 0, 0, 0.1)',
       '& span': {
         display: 'inline-block'
+      },
+      '& img': {
+        width: '100%',
+        height: 'auto'
       }
     },
     buttonContent: {
@@ -135107,7 +135104,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135129,7 +135126,7 @@ var _reactJss2 = _interopRequireDefault(_reactJss);
 
 var _gsap = __webpack_require__(6);
 
-var _style = __webpack_require__(322);
+var _style = __webpack_require__(323);
 
 var _style2 = _interopRequireDefault(_style);
 
@@ -135216,7 +135213,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135257,7 +135254,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135283,7 +135280,7 @@ var _Button = __webpack_require__(112);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _style = __webpack_require__(324);
+var _style = __webpack_require__(325);
 
 var _style2 = _interopRequireDefault(_style);
 
@@ -135416,7 +135413,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135488,7 +135485,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135510,7 +135507,7 @@ var _reactJss2 = _interopRequireDefault(_reactJss);
 
 var _gsap = __webpack_require__(6);
 
-var _style = __webpack_require__(326);
+var _style = __webpack_require__(327);
 
 var _style2 = _interopRequireDefault(_style);
 
@@ -135635,7 +135632,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135695,7 +135692,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135717,7 +135714,7 @@ var _reactJss2 = _interopRequireDefault(_reactJss);
 
 var _gsap = __webpack_require__(6);
 
-var _style = __webpack_require__(328);
+var _style = __webpack_require__(329);
 
 var _style2 = _interopRequireDefault(_style);
 
@@ -135822,7 +135819,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135931,7 +135928,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -135951,13 +135948,13 @@ var _reactJss = __webpack_require__(7);
 
 var _reactJss2 = _interopRequireDefault(_reactJss);
 
-var _classnames = __webpack_require__(330);
+var _classnames = __webpack_require__(331);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
 var _gsap = __webpack_require__(6);
 
-var _style = __webpack_require__(331);
+var _style = __webpack_require__(332);
 
 var _style2 = _interopRequireDefault(_style);
 
@@ -136100,7 +136097,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -136155,7 +136152,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 331 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -136263,7 +136260,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 332 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -136305,13 +136302,13 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 333 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "fonts/Streamster.woff";
 
 /***/ }),
-/* 334 */
+/* 335 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
