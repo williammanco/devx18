@@ -67415,6 +67415,18 @@ var Button = function (_Component) {
       init();
     }
   }, {
+    key: 'getRenderIcon',
+    value: function getRenderIcon() {
+      this.renderIcon = false;
+
+      if (!this.props.icon) {
+        this.renderIcon = _react2.default.createElement('polygon', { points: '60.2,47.1 55.1,47.1 55.1,42 54.3,42 54.3,47.1 49.2,47.1 49.2,47.9 54.3,47.9 54.3,53 55.1,53 55.1,47.9 60.2,47.9 ' });
+      } else {
+        this.renderIcon = _react2.default.createElement('path', { d: 'M60.2,50.5c0.5-0.9,0.7-1.9,0.7-3c0-3.6-2.9-6.5-6.5-6.5c-3.6,0-6.5,2.9-6.5,6.5s2.9,6.5,6.5,6.5c0.1,0,0.3,0,0.4,0l0.4-1.2 c-0.3,0-0.5,0.1-0.8,0.1c-3,0-5.4-2.4-5.4-5.4s2.4-5.4,5.4-5.4c3,0,5.4,2.4,5.4,5.4c0,0.9-0.2,1.7-0.6,2.5L58,49.4l0.2,3.9l3.3-2.1 L60.2,50.5z' });
+      }
+      return this.renderIcon;
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this3 = this;
@@ -67483,7 +67495,7 @@ var Button = function (_Component) {
                 { style: { fillOpacity: 0.3 } },
                 _react2.default.createElement('path', { d: 'M33.4,84.5l-21.3-37l21.3-37H76l21.3,37L76,84.5H33.4z M13.3,47.5l20.7,36h41.4l20.7-36l-20.7-36H34L13.3,47.5z' })
               ),
-              _react2.default.createElement('polygon', { points: '60.2,47.1 55.1,47.1 55.1,42 54.3,42 54.3,47.1 49.2,47.1 49.2,47.9 54.3,47.9 54.3,53 55.1,53 55.1,47.9 60.2,47.9 ' })
+              this.getRenderIcon()
             )
           ),
           _react2.default.createElement(
@@ -77589,7 +77601,7 @@ var Canvas = function (_Component) {
               _sono2.default.get('intro').stop();
             } });
           _gsap.TweenMax.fromTo(_sono2.default.get('background'), 1, { volume: 0 }, { volume: 0.7, ease: _gsap.Linear.easeNone });
-          _sono2.default.get('background').play();
+          _sono2.default.get('background').play().loop = true;
           _sono2.default.get('background').playbackRate = 1;
           _gsap.TweenMax.to(this.cursor.position, 5, { z: 0, ease: _gsap.Expo.easeOut });
           _gsap.TweenMax.to(this.camera.rotation, 5, { x: _three.Math.degToRad(0), ease: _gsap.Power3.easeInOut });
@@ -135065,7 +135077,7 @@ var style = function style(theme) {
     },
     bottom: {
       fontFamily: theme.fonts[1],
-      width: '415px',
+      width: '380px',
       margin: '-150px auto',
       paddingLeft: '20px',
       textAlign: 'center',
@@ -135413,7 +135425,7 @@ var GameOver = function (_Component) {
           { className: classes.text },
           this.props.text
         ),
-        _react2.default.createElement(_Button2.default, { gameOver: true, ready: this.props.ready, show: this.props.show, setGameOver: this.props.setGameOver, label: 'restart' })
+        _react2.default.createElement(_Button2.default, { gameOver: true, ready: this.props.ready, show: this.props.show, setGameOver: this.props.setGameOver, icon: 'restart', label: 'restart' })
       );
       return this.renderContent;
     }
